@@ -44,12 +44,12 @@ pip install https://github.com/MiroPsota/torch_packages_builder/releases/downloa
 # follow guidance from here: https://github.com/NVlabs/FoundationPose/pull/369
 CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 bash build_all_conda.sh
 
-# Cutie
+# cutie
 cd ..
 cd Cutie
 pip install -e .
 
-# Others
+# others
 pip install pyrealsense2==2.53.1.4623
 pip install spyder-kernels
 ```
@@ -107,7 +107,7 @@ python src/run_offline_video.py --testcase xxx
 </details>
 
 ## License
-Unless specified, this pipeline is released under the MIT license.
+Unless specified, the pipeline itself is released under the MIT license. Each component in the pipeline has its own license file, please check carefully.
 
 ## Acknowledgement
 
@@ -118,5 +118,3 @@ The pipeline makes use of multiple existing works that are openly available at:
 + [SAM 2](https://github.com/facebookresearch/sam2)
 + [DINOv3](https://github.com/facebookresearch/dinov3)
 + [Cutie](https://github.com/hkchengrex/Cutie)
-
-
