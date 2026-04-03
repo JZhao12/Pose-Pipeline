@@ -117,4 +117,6 @@ The pipeline makes use of multiple existing works that are openly available at:
 + [FoundationPose++](https://github.com/teal024/FoundationPose-plus-plus)
 + [SAM 2](https://github.com/facebookresearch/sam2)
 + [DINOv3](https://github.com/facebookresearch/dinov3)
++ [Cutie](https://github.com/hkchengrex/Cutie)
+
 
