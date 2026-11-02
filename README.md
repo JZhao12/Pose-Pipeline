@@ -1,23 +1,66 @@
 <div align="center">
-<h2>Pose-Pipeline</h2>
-<p>A complete pipeline for CAD-based novel-object 6-DoF pose estimation and tracking from an RGB-D camera</p>
+<h2>A pipeline for CAD-based novel-object 6-DoF pose estimation and tracking</h2>
+<p><b>Authors:</b> <a href="https://scholar.google.com/citations?user=b6qSMLwAAAAJ&hl=en">Jianyu Zhao</a></p>
 </div>
 
-Given a 3D model of an object and an RGB-D sequence, the pipeline segments the object in the first frame, registers its 6-DoF pose, and tracks it through the whole sequence:
+Given a CAD model of a rigid object and an RGB-D video, the pipeline finds the object in the first frame, registers its 6-DoF pose, and tracks it through the rest of the sequence. No training on the target object is needed: all three components are zero-shot models, and the only object-specific input is the mesh.
 
+```mermaid
+flowchart LR
+    subgraph IN["Inputs"]
+        RGBD["RGB-D sequence<br/>(Intel RealSense)"]
+        CAD["Object CAD model<br/>(mesh.obj)"]
+    end
+    subgraph INIT["Frame 0: initialisation"]
+        CNOS["CNOS segmentation<br/>SAM 2 + DINOv3"]
+        REG["FoundationPose<br/>registration"]
+    end
+    subgraph LOOP["Frames 1..N: tracking loop"]
+        CUTIE["Cutie<br/>2D video segmentation"]
+        KF["Error-state Kalman filter<br/>predict + 2D correction"]
+        FP["FoundationPose<br/>pose refinement"]
+    end
+    OUT[("Per-frame outputs<br/>ob_in_cam/*.txt, pose.npy<br/>bbox_2d.txt, visualisations")]
+
+    CAD --> CNOS
+    RGBD --> CNOS
+    CNOS -->|"object mask"| REG
+    CAD --> REG
+    REG -->|"initial pose"| KF
+    RGBD --> CUTIE
+    CUTIE -->|"box centre"| KF
+    KF -->|"pose seed"| FP
+    FP -->|"refined pose"| KF
+    FP --> OUT
 ```
-RealSense RGB-D  ──►  CNOS (SAM 2 + DINOv3)  ──►  first-frame mask
-                                                        │
-      3D model (mesh.obj)  ──────────────────────────────┤
-                                                        ▼
-                     FoundationPose register ──► per-frame: Cutie 2D tracking
-                                                          + error-state Kalman filter
-                                                          + FoundationPose refinement
-                                                        ▼
-                              results/<name>/{ob_in_cam/*.txt, pose.npy, bbox_2d.txt, visualizations}
-```
+
+- **Initialisation** (frame 0): CNOS renders templates of the CAD model, matches them against SAM 2 proposals with DINOv3 features, and produces the object mask. FoundationPose registers the initial pose from that mask and the depth image.
+- **Tracking** (every following frame): Cutie propagates the mask through the video; its box centre corrects the position predicted by an error-state Kalman filter; the filter state seeds FoundationPose's refiner, and the refined pose updates the filter.
+- **Outputs**: a 4×4 object-to-camera pose per frame, the 2D box, and overlay images of mask, box and pose.
 
 Tested on Ubuntu, Python 3.10, PyTorch 2.8.0 + CUDA 12.8, RTX 5070 (sm_120). One sequence of ~450 frames at 640×480 takes about 60–80 s end to end.
+
+## Visualisation results
+
+Two hand-held objects recorded with an Intel RealSense D435 at 640×480. For each sequence the first row shows the four stages at one frame: the input image, the segmentation mask from Cutie, the bounding box derived from it, and the refined 6D pose drawn as the model's oriented bounding box with its axes. The second row shows the tracked pose at eight frames spread over the sequence, including moments where the hand occludes most of the object.
+
+### Tea box (`teabox_D435`, 455 frames)
+
+![Tea box: input, mask, box, pose](docs/images/teabox_D435_stages.png)
+![Tea box: pose over the sequence](docs/images/teabox_D435_tracking.png)
+
+### Medicine box (`medbox_D435`, 404 frames)
+
+![Medicine box: input, mask, box, pose](docs/images/medbox_D435_stages.png)
+![Medicine box: pose over the sequence](docs/images/medbox_D435_tracking.png)
+
+<table align="center">
+<tr><td align="center"><b>Tea box</b></td><td align="center"><b>Medicine box</b></td></tr>
+<tr>
+<td><img src="docs/images/teabox_D435.gif" width="320"></td>
+<td><img src="docs/images/medbox_D435.gif" width="320"></td>
+</tr>
+</table>
 
 ## Repository layout
 
@@ -25,6 +68,7 @@ Tested on Ubuntu, Python 3.10, PyTorch 2.8.0 + CUDA 12.8, RTX 5070 (sm_120). One
 |---|---|---|
 | `src/` | The pipeline itself (tracking loop, Kalman filter, Cutie wrapper, capture and video tools) | yes |
 | `tests/` | CPU unit tests and an opt-in GPU smoke test | yes |
+| `docs/` | Figures for this README and the patch describing the CNOS changes | yes |
 | `FoundationPose/` | NVIDIA FoundationPose with local build fixes (PR #369, C++17, CUDA 12.8). NVIDIA non-commercial license | yes (source only) |
 | `Cutie/` | Cutie video object segmentation, with a small threshold patch | yes (source only) |
 | `cnosv2/` | CNOS adapted to SAM 2.1 + DINOv3 for first-frame segmentation (`docs/cnosv2_changes_vs_upstream_298d1f3.patch` lists the changes vs upstream) | yes (source only) |
