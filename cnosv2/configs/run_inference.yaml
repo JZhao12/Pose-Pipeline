@@ -1,0 +1,7 @@
+defaults:
+  - user: default
+  - machine: local
+  - callback: base 
+  - data: bop
+  - model: cnos
+  - _self_

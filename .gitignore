@@ -1,0 +1,62 @@
+# ---------- 本地数据与结果（体积大、含私人录制画面，不入库） ----------
+/offline/
+/results/
+/tmp/
+/outputs/
+/.hydra/
+/final_verify/
+/.final_verify/
+
+# ---------- 模型权重（可从各项目官方渠道下载，不应重新分发） ----------
+**/weights/
+**/checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.engine
+
+# ---------- 编译产物 / 构建目录 ----------
+**/build/
+**/dist/
+**/*.egg-info/
+**/*.so
+**/*.o
+**/*.a
+**/*.ninja
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# ---------- 编辑器 / 系统 ----------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---------- 本机工具配置（含个人权限设置，不入库） ----------
+/.claude/
+/CLAUDE.md
+
+# ---------- 本地参考笔记（与 README 重复，仅本地保留） ----------
+/Pose-Pipeline.md
+/Pose-Pipeline usage.md
+
+# ---------- 上游 vendored 项目 ----------
+# FoundationPose/ 与 Cutie/ 的源码直接入库（含本地修改与各自的 LICENSE；权重/构建产物由上面的规则排除）。
+# SAM2 与 DINOv3 相对上游没有源码改动，不入库，请按 README 里的 commit 克隆到对应位置：
+/cnosv2/sam2_repo/
+/cnosv2/dinov3_repo/
+# cnosv2/sam2 是 sam2_repo/sam2 的副本（pip install -e sam2_repo 后 import 直接解析到 sam2_repo）
+/cnosv2/sam2/
+# cnosv2 自带的上游 .git（本仓库以普通目录方式包含 cnosv2 的源码）
+/cnosv2/.git/

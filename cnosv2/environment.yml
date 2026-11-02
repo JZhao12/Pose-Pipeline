@@ -1,0 +1,37 @@
+name: cnos
+channels:
+  - xformers
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  - python=3.11.14
+  - pip:
+    - numpy
+    - omegaconf
+    - torch==2.8.0
+    - torchvision==0.23.0
+    - torchmetrics==1.8.2
+    - fvcore
+    - iopath
+    - xformers==0.0.32.post1
+    - opencv-python 
+    - pycocotools 
+    - matplotlib 
+    - onnxruntime 
+    - onnx
+    - scipy
+    - ffmpeg
+    - hydra-colorlog
+    - hydra-core
+    - gdown
+    - pytorch-lightning==2.5.4
+    - pandas
+    - ruamel.yaml
+    - pyrender
+    - wandb
+    - distinctipy
+    - git+https://github.com/facebookresearch/hand_tracking_toolkit.git
+# bop https://github.com/thodan/bop_toolkit.git
