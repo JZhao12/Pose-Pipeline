@@ -1,6 +1,6 @@
 <div align="center">
 <h2>A pipeline for CAD-based novel-object 6-DoF pose estimation and tracking</h2>
-<p><b>Authors:</b> <a href="https://scholar.google.com/citations?user=b6qSMLwAAAAJ&hl=en">Jianyu Zhao</a></p>
+<p><b>Author:</b> <a href="https://scholar.google.com/citations?user=b6qSMLwAAAAJ&hl=en">Jianyu Zhao</a>, assisted by Claude Code.</p>
 </div>
 
 Given a CAD model of a rigid object and an RGB-D video, the pipeline finds the object in the first frame, registers its 6-DoF pose, and tracks it through the rest of the sequence. No training on the target object is needed: all three components are zero-shot models, and the only object-specific input is the mesh.
@@ -44,12 +44,12 @@ Tested on Ubuntu, Python 3.10, PyTorch 2.8.0 + CUDA 12.8, RTX 5070 (sm_120). One
 
 Two hand-held objects recorded with an Intel RealSense D435 at 640×480. For each sequence the first row shows the four stages at one frame: the input image, the segmentation mask from Cutie, the bounding box derived from it, and the refined 6D pose drawn as the model's oriented bounding box with its axes. The second row shows the tracked pose at eight frames spread over the sequence, including moments where the hand occludes most of the object.
 
-### Tea box (`teabox_D435`, 455 frames)
+### Tea box demo
 
 ![Tea box: input, mask, box, pose](docs/images/teabox_D435_stages.png)
 ![Tea box: pose over the sequence](docs/images/teabox_D435_tracking.png)
 
-### Medicine box (`medbox_D435`, 404 frames)
+### Medicine box demo
 
 ![Medicine box: input, mask, box, pose](docs/images/medbox_D435_stages.png)
 ![Medicine box: pose over the sequence](docs/images/medbox_D435_tracking.png)
